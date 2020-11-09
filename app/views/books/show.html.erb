@@ -18,15 +18,17 @@
   </div>
 </div>
 
-<%= form_with(model: [ @book, @book.trades.build ], local: true) do |form| %>
-  <h4>Want to trade?</h4>
-  <%= form.hidden_field :sender_id, value: current_user.id %>
-  <%= form.hidden_field :recipient_id, value: @book.user_id %>
-  <%= form.hidden_field :status, value: :waiting %>
-  <div class="form-group">
-    <%= form.collection_select :proposed_book_id, current_user.books.where(shared: :true).order(:title),:id,:title, include_blank: true, :class => 'form-control' %>
-    <%= form.submit :class => 'btn btn-primary' %>
-  </div>
+<% unless @book.user == current_user %>
+  <%= form_with(model: [ @book, @book.trades.build ], local: true) do |form| %>
+    <h4>Want to trade?</h4>
+    <%= form.hidden_field :sender_id, value: current_user.id %>
+    <%= form.hidden_field :recipient_id, value: @book.user_id %>
+    <%= form.hidden_field :status, value: :waiting %>
+    <div class="form-group">
+      <%= form.collection_select :proposed_book_id, current_user.books.where(shared: :true).order(:title),:id,:title, include_blank: true, :class => 'form-control' %>
+      <%= form.submit :class => 'btn btn-primary' %>
+    </div>
+  <% end %>
 <% end %>
 
 <h2>Comments</h2>
@@ -57,18 +59,20 @@
   <div class="container">
     <div class="row">
       <% @book.comments.each do |comment| %>
-        <% unless comment.approved && comment.commenter == current_user.username %>
-          <div class="col-md-4">
-            <div class="card mb-4 shadow-sm">
-              <div class="card-header"><%= comment.title %></div>
-              <div class="card-body">
-                <p class="card-text"><%= comment.content %></p>
-                <div class="d-flex justify-content-between align-items-center">
-                  <small class="text-muted"><%= comment.commenter %></small>
+        <% unless comment.approved %>
+          <% if comment.commenter == current_user.username %>
+            <div class="col-md-4">
+              <div class="card mb-4 shadow-sm">
+                <div class="card-header"><%= comment.title %></div>
+                <div class="card-body">
+                  <p class="card-text"><%= comment.content %></p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted"><%= comment.commenter %></small>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       <% end %>
     </div>
