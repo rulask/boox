@@ -1,0 +1,26 @@
+<h1>Trade</h1>
+
+<div class="card m-2" style="width: 18rem;">
+  <div class="card-header"><%= @trade.book.title %></div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><%= @trade.proposed_book.title %></li>
+    <li class="list-group-item"><%= @trade.sender.username %></li>
+    <li class="list-group-item"><%= @trade.status %></li>
+  </ul>
+</div>
+
+<%= form_with model: [@book, @trade], local: true do |form| %>
+  <%= form.hidden_field :sender_id %>
+  <%= form.hidden_field :recipient_id %>
+  <%= form.hidden_field :status, value: :waiting %>
+  <p>
+    <%= form.label :Status %>
+    <%= form.select(:status, Trade.statuses.keys) %>
+  </p>
+  <p>
+    <%= form.submit 'Respond' %>
+  </p>
+<% end %>
+
+
+<%= link_to 'Back', dashboard_url %>

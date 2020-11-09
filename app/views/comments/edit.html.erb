@@ -1,0 +1,21 @@
+<p>
+  <strong><%= @comment.title %></strong> | <%= @comment.commenter %>
+</p>
+
+<p>
+  <%= @comment.content %>
+</p>
+
+<%= form_with model: [@book, @comment], local: true do |form| %>
+  <%= form.hidden_field :title %><br>
+  <%= form.hidden_field :title %>
+  <%= form.hidden_field :content %>
+  <%= form.hidden_field :commenter %>
+  <p>
+  <%= form.label :approve? %>
+  <%= form.check_box :approved %>
+  </p>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>

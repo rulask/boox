@@ -1,0 +1,93 @@
+<h1>Dashboard</h1>
+
+<h3><b>Your Books</b></h3>
+
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <% @my_books.each do |book| %>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header"><%= book.title %></div>
+            <div class="card-body">
+              <p class="card-text">Written by <b><%= book.author %></b>.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <%= link_to 'Show', book_path(book), :class => "btn btn-sm btn-outline-secondary" %>
+                  <%= link_to 'Edit', edit_book_path(book), :class => "btn btn-sm btn-outline-secondary" %>
+                  <%= link_to 'Delete', book_path(book), method: :delete, data: { confirm: 'Are you sure?' } ,:class => "btn btn-sm btn-outline-secondary" %>
+                </div>
+                <small class="text-muted"><%= book.pagecount %> pages.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <%= link_to 'Add a new book', new_book_path, :class => "btn btn-outline-success" %>
+  </div>
+</div>
+  <% if @trades.count > 0 %>
+    <h3><b>Trades</b></h3>
+  <% end %>
+  <div class="d-flex bd-highlight">
+  <% @trades.where(:recipient_id => current_user.id).each do |trade| %>
+    <div class="card m-2" style="width: 18rem;">
+      <div class="card-header">Book: <%= @my_books.where(:id => trade.book_id).first.title %></div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Sender: <%= @users.where(:id => trade.sender_id).first.username %></li>
+        <li class="list-group-item">Status: <%= trade.status %></li>
+        <li class="list-group-item"><%= link_to 'Respond to offer', edit_book_trade_path(trade.book_id, trade) %></li>
+      </ul>
+    </div>
+  <% end %>
+  </div>
+
+  <% if @trades.where(:sender_id => current_user.id).count > 0 %>
+    <h3><b>Your Offers</b></h3>
+  <% end %>
+
+  <div class="d-flex bd-highlight">
+  <% @trades.where(:sender_id => current_user.id).each do |trade| %>
+    <div class="card m-2" style="width: 18rem;">
+      <div class="card-header">You offered for <b><%= @books.where(:id => trade.book_id).first.title %></b></div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">You proposed <b><%= trade.proposed_book.title %></b> book.</li>
+        <li class="list-group-item">Recipient: <%= trade.recipient.username %></li>
+        <li class="list-group-item">Status: <%= trade.status %></li>
+      </ul>
+    </div>
+  <% end %>
+  </div>
+
+<h3><b>Comments Made To Your Books</b></h3>
+<table>
+  <% @my_books.each do |book| %>
+    <% book.comments.each do |comment| %>
+    <div class="alert alert-light" role="alert">
+      <%= "#{comment.commenter} wrote a comment to your '#{book.title}' book." %> <%= comment.approved ? 'To disapprove:' : 'To approve:' %> <%= link_to 'Click', edit_book_comment_path(comment, book) %>
+    </div>
+    <% end %>
+  <% end %>
+</table>
+
+<h3><b>Your Comments</b></h3>
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <% @comments.each do |comment| %>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header"><%= comment.title %></div>
+            <div class="card-body">
+              <p class="card-text"><%= comment.content %></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted"><%= comment.book.title %> | <%= comment.approved ? 'Approved' : 'Unapproved' %></small>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

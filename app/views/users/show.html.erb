@@ -1,0 +1,27 @@
+<h2><%= @user.username %></h2>
+<h4><%= @user.email %></h4>
+
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <% @user.books.each do |book| %>
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header"><%= book.title %></div>
+            <div class="card-body">
+              <p class="card-text">Written by <b><%= book.author %></b>.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <%= link_to 'Show', book_path(book), :class => "btn btn-sm btn-outline-secondary" %>
+                </div>
+                <small class="text-muted"><%= book.pagecount %> pages.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= link_to 'Back', root_path %>
